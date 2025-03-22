@@ -2,7 +2,9 @@
     "name": "IDM.UI",
     "rootNamespace": "",
     "references": [
-        "IDM.Core"
+        "IDM.Core",
+        "Unity.TextMeshPro",
+        "Unity.TextMeshPro.Editor"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
