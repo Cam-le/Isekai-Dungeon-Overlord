@@ -1,0 +1,16 @@
+{
+    "name": "IDM.Events",
+    "rootNamespace": "",
+    "references": [
+        "GUID:9858b0412718c7a439e6a8b3a48804c0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
