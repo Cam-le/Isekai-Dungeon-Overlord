@@ -2,49 +2,65 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using IDM.Core;
 using TMPro;
+using IDM.Core;
+
 namespace IDM.UI
 {
-
     /// <summary>
-    /// Manages the main game UI elements that visualize the turn structure
+    /// Manages the main game UI elements that visualize the time-based turn structure
     /// </summary>
     public class GameLoopUI : MonoBehaviour
     {
-        [Header("Time Period Indicators")]
-        [SerializeField] private GameObject timePeriodPanel;
-        [SerializeField] private Image morningIndicator;
-        [SerializeField] private Image afternoonIndicator;
-        [SerializeField] private Image eveningIndicator;
-        [SerializeField] private Image nightIndicator;
+        #region UI References
+        [Header("Layout Containers")]
+        [SerializeField] private RectTransform headerPanel;
+        [SerializeField] private RectTransform mainContentPanel;
+        [SerializeField] private RectTransform actionBarPanel;
 
-        [Header("Turn Information")]
+        [Header("Header UI Elements")]
         [SerializeField] private TextMeshProUGUI turnCounterText;
         [SerializeField] private TextMeshProUGUI currentTimeText;
-        [SerializeField] private TextMeshProUGUI currentStateText;
+        [SerializeField] private GameObject timeIndicatorsContainer;
+        [SerializeField] private Image[] timeIndicators = new Image[4]; // Morning, Afternoon, Evening, Night
 
-        [Header("Action Buttons")]
+        [Header("Resource Display")]
+        [SerializeField] private GameObject resourceDisplayContainer;
+        [SerializeField] private TextMeshProUGUI dungeonPointsText;
+        [SerializeField] private TextMeshProUGUI woodText;
+        [SerializeField] private TextMeshProUGUI stoneText;
+        [SerializeField] private TextMeshProUGUI manaText;
+
+        [Header("Action Bar Buttons")]
+        [SerializeField] private GameObject actionSelectionButtons;
         [SerializeField] private Button dungeonManagementButton;
         [SerializeField] private Button factionNegotiationButton;
         [SerializeField] private Button buildConstructionButton;
         [SerializeField] private Button resourceGatheringButton;
         [SerializeField] private Button advanceTimeButton;
         [SerializeField] private Button endTurnButton;
-
-        [Header("Action Panel")]
-        [SerializeField] private GameObject actionButtonsPanel;
-        [SerializeField] private GameObject returnToSelectionPanel;
+        [SerializeField] private GameObject returnButtonContainer;
         [SerializeField] private Button returnToSelectionButton;
 
+        [Header("Main Content Panels")]
+        [SerializeField] private GameObject dungeonOverviewPanel;
+        [SerializeField] private GameObject dungeonManagementPanel;
+        [SerializeField] private GameObject buildingConstructionPanel;
+        [SerializeField] private GameObject resourceGatheringPanel;
+        [SerializeField] private GameObject factionNegotiationPanel;
+        #endregion
+
+        #region Private Variables
         // Reference to the game manager
         private GameLoopManager _gameManager;
 
         // Color settings for time period indicators
-        private Color _activeTimeColor = new Color(0.18f, 0.8f, 0.44f); // Green
+        private Color _activeTimeColor = new Color(0.5f, 0.2f, 0.8f); // Purple
         private Color _completedTimeColor = new Color(0.2f, 0.2f, 0.8f); // Blue
-        private Color _inactiveTimeColor = new Color(0.6f, 0.6f, 0.6f); // Gray
+        private Color _inactiveTimeColor = new Color(0.3f, 0.3f, 0.3f); // Dark Gray
+        #endregion
 
+        #region Unity Lifecycle
         private void Start()
         {
             // Get reference to the game manager
@@ -70,6 +86,9 @@ namespace IDM.UI
             UpdateTurnUI(_gameManager.CurrentTurn);
             UpdateTimePeriodUI(_gameManager.CurrentTimePeriod);
             UpdateStateUI(_gameManager.CurrentStateType);
+
+            // Initial resource display (placeholder values for now)
+            UpdateResourceDisplay();
         }
 
         private void OnDestroy()
@@ -82,7 +101,9 @@ namespace IDM.UI
                 _gameManager.OnTimePeriodChanged -= UpdateTimePeriodUI;
             }
         }
+        #endregion
 
+        #region UI Update Methods
         /// <summary>
         /// Updates UI elements based on the current turn
         /// </summary>
@@ -97,35 +118,26 @@ namespace IDM.UI
         private void UpdateTimePeriodUI(TimePeriod timePeriod)
         {
             // Update the time text
-            currentTimeText.text = $"Time: {timePeriod}";
+            currentTimeText.text = $"{timePeriod}";
 
             // Reset all indicators to inactive
-            morningIndicator.color = _inactiveTimeColor;
-            afternoonIndicator.color = _inactiveTimeColor;
-            eveningIndicator.color = _inactiveTimeColor;
-            nightIndicator.color = _inactiveTimeColor;
-
-            // Mark completed time periods
-            switch (timePeriod)
+            for (int i = 0; i < timeIndicators.Length; i++)
             {
-                case TimePeriod.Morning:
-                    morningIndicator.color = _activeTimeColor;
-                    break;
-                case TimePeriod.Afternoon:
-                    morningIndicator.color = _completedTimeColor;
-                    afternoonIndicator.color = _activeTimeColor;
-                    break;
-                case TimePeriod.Evening:
-                    morningIndicator.color = _completedTimeColor;
-                    afternoonIndicator.color = _completedTimeColor;
-                    eveningIndicator.color = _activeTimeColor;
-                    break;
-                case TimePeriod.Night:
-                    morningIndicator.color = _completedTimeColor;
-                    afternoonIndicator.color = _completedTimeColor;
-                    eveningIndicator.color = _completedTimeColor;
-                    nightIndicator.color = _activeTimeColor;
-                    break;
+                timeIndicators[i].color = _inactiveTimeColor;
+            }
+
+            // Mark completed and current time periods
+            int currentIndex = (int)timePeriod;
+            for (int i = 0; i < timeIndicators.Length; i++)
+            {
+                if (i < currentIndex)
+                {
+                    timeIndicators[i].color = _completedTimeColor;
+                }
+                else if (i == currentIndex)
+                {
+                    timeIndicators[i].color = _activeTimeColor;
+                }
             }
         }
 
@@ -134,25 +146,55 @@ namespace IDM.UI
         /// </summary>
         private void UpdateStateUI(GameStateType stateType)
         {
-            // Update the state text
-            currentStateText.text = $"State: {GetStateDisplayName(stateType)}";
+            // Hide all content panels first
+            dungeonOverviewPanel.SetActive(false);
+            dungeonManagementPanel.SetActive(false);
+            buildingConstructionPanel.SetActive(false);
+            resourceGatheringPanel.SetActive(false);
+            factionNegotiationPanel.SetActive(false);
 
-            // Show/hide appropriate panels based on state
+            // Show/hide action buttons based on state
             bool isActionSelection = stateType == GameStateType.PlayerActionSelection;
-            actionButtonsPanel.SetActive(isActionSelection);
-            returnToSelectionPanel.SetActive(!isActionSelection &&
-                                              stateType != GameStateType.TurnStart &&
-                                              stateType != GameStateType.TurnEnd &&
-                                              stateType != GameStateType.AdvanceTime);
+            actionSelectionButtons.SetActive(isActionSelection);
+            returnButtonContainer.SetActive(!isActionSelection);
 
-            // Disable end turn button if it's not night yet
-            if (isActionSelection)
+            // Show the appropriate content panel based on state
+            switch (stateType)
             {
-                TimePeriod currentTimePeriod = _gameManager.CurrentTimePeriod;
-                endTurnButton.interactable = true; // Allow ending turn early
+                case GameStateType.PlayerActionSelection:
+                    dungeonOverviewPanel.SetActive(true);
+                    break;
+                case GameStateType.DungeonManagement:
+                    dungeonManagementPanel.SetActive(true);
+                    break;
+                case GameStateType.BuildingConstruction:
+                    buildingConstructionPanel.SetActive(true);
+                    break;
+                case GameStateType.ResourceGathering:
+                    resourceGatheringPanel.SetActive(true);
+                    break;
+                case GameStateType.FactionNegotiation:
+                    factionNegotiationPanel.SetActive(true);
+                    break;
+                    // Add other states as needed
             }
         }
 
+        /// <summary>
+        /// Updates the resource display
+        /// </summary>
+        private void UpdateResourceDisplay()
+        {
+            // This would be connected to a resource manager in the future
+            // For now, just displaying placeholder values
+            dungeonPointsText.text = "125";
+            woodText.text = "45";
+            stoneText.text = "30";
+            manaText.text = "15";
+        }
+        #endregion
+
+        #region Button Event Handlers
         /// <summary>
         /// Called when an action button is clicked
         /// </summary>
@@ -168,26 +210,53 @@ namespace IDM.UI
         {
             _gameManager.CompleteActionAndReturnToSelection();
         }
+        #endregion
+
+        #region Content Panel Methods (Placeholders)
+        /// <summary>
+        /// Updates the dungeon overview panel with current game info
+        /// </summary>
+        public void UpdateDungeonOverview()
+        {
+            // This will be implemented in a future phase
+            // Would show dungeon visualization, active projects, etc.
+        }
 
         /// <summary>
-        /// Returns a user-friendly display name for the given state type
+        /// Updates the dungeon management panel
         /// </summary>
-        private string GetStateDisplayName(GameStateType stateType)
+        public void UpdateDungeonManagement()
         {
-            return stateType switch
-            {
-                GameStateType.TurnStart => "Turn Start",
-                GameStateType.PlayerActionSelection => "Select Action",
-                GameStateType.DungeonManagement => "Dungeon Management",
-                GameStateType.FactionNegotiation => "Faction Negotiations",
-                GameStateType.BuildingConstruction => "Construction",
-                GameStateType.ResourceGathering => "Resource Gathering",
-                GameStateType.EventInteraction => "Event",
-                GameStateType.AdvanceTime => "Advancing Time",
-                GameStateType.CombatDefense => "Combat",
-                GameStateType.TurnEnd => "Turn End",
-                _ => stateType.ToString()
-            };
+            // This will be implemented in a future phase
+            // Would display minion assignments, facilities, etc.
         }
+
+        /// <summary>
+        /// Updates the building construction panel
+        /// </summary>
+        public void UpdateBuildingConstruction()
+        {
+            // This will be implemented in a future phase
+            // Would display available projects, current constructions, etc.
+        }
+
+        /// <summary>
+        /// Updates the resource gathering panel
+        /// </summary>
+        public void UpdateResourceGathering()
+        {
+            // This will be implemented in a future phase
+            // Would display gatherer assignments, collection rates, etc.
+        }
+
+        /// <summary>
+        /// Updates the faction negotiation panel
+        /// </summary>
+        public void UpdateFactionNegotiation()
+        {
+            // This will be implemented in a future phase
+            // Would display factions, relations, treaties, etc.
+        }
+        #endregion
     }
 }

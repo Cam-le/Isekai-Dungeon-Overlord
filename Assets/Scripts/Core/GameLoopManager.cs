@@ -80,8 +80,8 @@ namespace IDM.Core
             _currentTurn = 1;
             _currentTimePeriod = TimePeriod.Morning;
 
-            // Start with the TurnStart state
-            ChangeState(GameStateType.TurnStart);
+            // Start with the PlayerActionSelection state
+            ChangeState(GameStateType.PlayerActionSelection);
 
             // Notify listeners that turn 1 has started
             OnTurnChanged?.Invoke(_currentTurn);
