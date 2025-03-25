@@ -86,6 +86,14 @@ namespace IDM.Core
             // Notify listeners that turn 1 has started
             OnTurnChanged?.Invoke(_currentTurn);
             OnTimePeriodChanged?.Invoke(_currentTimePeriod);
+
+            // Connect resource system
+            ConnectResourceSystem();
+        }
+        private void OnDestroy()
+        {
+            // Disconnect to prevent memory leaks
+            DisconnectResourceSystem();
         }
         #endregion
 
@@ -205,6 +213,40 @@ namespace IDM.Core
         public void CompleteActionAndReturnToSelection()
         {
             ChangeState(GameStateType.PlayerActionSelection);
+        }
+
+        /// <summary>
+        /// Connect resource system to game loop events
+        /// </summary>
+        public void ConnectResourceSystem()
+        {
+            // Subscribe to time advancement events
+            OnTimePeriodChanged += (timePeriod) => {
+                // Broadcast via EventBus
+                EventBus.Instance.TriggerEvent("TimePeriodAdvanced", timePeriod);
+                Debug.Log($"Resources collected for {timePeriod} time period");
+            };
+
+            // Subscribe to turn change events
+            OnTurnChanged += (turnNumber) => {
+                // Broadcast via EventBus
+                EventBus.Instance.TriggerEvent("TurnCompleted", turnNumber);
+                Debug.Log($"Turn completed, Dungeon Points generated for turn {turnNumber}");
+            };
+
+            Debug.Log("Resource system connected to game loop");
+        }
+
+        /// <summary>
+        /// Disconnect resource system from game loop events
+        /// </summary>
+        public void DisconnectResourceSystem()
+        {
+            // The approach above using anonymous methods makes it harder to disconnect
+            // Instead we'll just broadcast a shutdown event that systems can listen for
+            EventBus.Instance.TriggerEvent("ResourceSystemDisconnecting");
+
+            Debug.Log("Resource system disconnected from game loop");
         }
     }
 

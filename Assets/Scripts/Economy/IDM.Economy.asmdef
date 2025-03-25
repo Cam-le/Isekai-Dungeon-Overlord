@@ -1,7 +1,9 @@
 {
-    "name": "IDM.Core",
+    "name": "IDM.Economy",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:9858b0412718c7a439e6a8b3a48804c0"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

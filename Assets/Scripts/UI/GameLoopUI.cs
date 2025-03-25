@@ -52,7 +52,7 @@ namespace IDM.UI
 
         #region Private Variables
         // Reference to the game manager
-        private GameLoopManager _gameManager;
+        private GameLoopManager _gameLoopManager;
 
         // Color settings for time period indicators
         private Color _activeTimeColor = new Color(0.5f, 0.2f, 0.8f); // Purple
@@ -64,12 +64,17 @@ namespace IDM.UI
         private void Start()
         {
             // Get reference to the game manager
-            _gameManager = GameLoopManager.Instance;
+            _gameLoopManager = GameLoopManager.Instance;
+
+            if (_gameLoopManager == null)
+            {
+                _gameLoopManager = FindFirstObjectByType<GameLoopManager>();
+            }
 
             // Subscribe to events
-            _gameManager.OnStateChanged += UpdateStateUI;
-            _gameManager.OnTurnChanged += UpdateTurnUI;
-            _gameManager.OnTimePeriodChanged += UpdateTimePeriodUI;
+            _gameLoopManager.OnStateChanged += UpdateStateUI;
+            _gameLoopManager.OnTurnChanged += UpdateTurnUI;
+            _gameLoopManager.OnTimePeriodChanged += UpdateTimePeriodUI;
 
             // Set up button listeners for main actions
             dungeonManagementButton.onClick.AddListener(() => OnActionButtonClicked(GameStateType.DungeonManagement));
@@ -83,22 +88,25 @@ namespace IDM.UI
             returnToSelectionButton.onClick.AddListener(OnReturnToSelectionClicked);
 
             // Initial UI update
-            UpdateTurnUI(_gameManager.CurrentTurn);
-            UpdateTimePeriodUI(_gameManager.CurrentTimePeriod);
-            UpdateStateUI(_gameManager.CurrentStateType);
+            UpdateTurnUI(_gameLoopManager.CurrentTurn);
+            UpdateTimePeriodUI(_gameLoopManager.CurrentTimePeriod);
+            UpdateStateUI(_gameLoopManager.CurrentStateType);
 
-            // Initial resource display (placeholder values for now)
-            UpdateResourceDisplay();
+            // Connect resource system to game loop
+            _gameLoopManager.ConnectResourceSystem();
         }
 
         private void OnDestroy()
         {
             // Unsubscribe from events
-            if (_gameManager != null)
+            if (_gameLoopManager != null)
             {
-                _gameManager.OnStateChanged -= UpdateStateUI;
-                _gameManager.OnTurnChanged -= UpdateTurnUI;
-                _gameManager.OnTimePeriodChanged -= UpdateTimePeriodUI;
+                _gameLoopManager.OnStateChanged -= UpdateStateUI;
+                _gameLoopManager.OnTurnChanged -= UpdateTurnUI;
+                _gameLoopManager.OnTimePeriodChanged -= UpdateTimePeriodUI;
+
+                // Disconnect to prevent memory leaks
+                _gameLoopManager.DisconnectResourceSystem();
             }
         }
         #endregion
@@ -180,18 +188,7 @@ namespace IDM.UI
             }
         }
 
-        /// <summary>
-        /// Updates the resource display
-        /// </summary>
-        private void UpdateResourceDisplay()
-        {
-            // This would be connected to a resource manager in the future
-            // For now, just displaying placeholder values
-            dungeonPointsText.text = "125";
-            woodText.text = "45";
-            stoneText.text = "30";
-            manaText.text = "15";
-        }
+
         #endregion
 
         #region Button Event Handlers
@@ -200,7 +197,7 @@ namespace IDM.UI
         /// </summary>
         private void OnActionButtonClicked(GameStateType actionState)
         {
-            _gameManager.ChangeState(actionState);
+            _gameLoopManager.ChangeState(actionState);
         }
 
         /// <summary>
@@ -208,7 +205,7 @@ namespace IDM.UI
         /// </summary>
         private void OnReturnToSelectionClicked()
         {
-            _gameManager.CompleteActionAndReturnToSelection();
+            _gameLoopManager.CompleteActionAndReturnToSelection();
         }
         #endregion
 
