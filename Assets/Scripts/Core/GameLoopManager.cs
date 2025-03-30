@@ -385,10 +385,18 @@ namespace IDM.Core
 
         public override void OnEnter()
         {
+            base.OnEnter();
             Debug.Log("Resource Gathering: Assign minions to gathering tasks");
 
+            // Load current gatherer assignments
             // Assigning gatherers doesn't advance time, rewards come when time advances
             // UI would display resource gathering options
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+            // Any cleanup code if needed
         }
     }
 
