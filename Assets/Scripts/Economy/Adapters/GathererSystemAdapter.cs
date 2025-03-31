@@ -1,24 +1,22 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using IDM.Economy.Interfaces;
 using IDM.Core;
 using IDM.Core.Events;
 
 namespace IDM.Economy.Adapters
 {
     /// <summary>
-    /// Adapter to make the existing GathererSystem compatible with the IGathererSystem interface
-    /// while preserving existing functionality.
+    /// Adapter for the GathererSystem that avoids cross-assembly type issues.
     /// </summary>
     [RequireComponent(typeof(GathererSystem))]
-    public class GathererSystemAdapter : MonoBehaviour, IGathererSystem
+    public class GathererSystemAdapter : MonoBehaviour
     {
         private GathererSystem _gathererSystem;
 
-        // IGathererSystem events (forward to original implementation)
+        // Events using primitive types to avoid cross-assembly issues
         public event Action<int> OnAvailableGatherersChanged;
-        public event Action<Dictionary<ResourceType, int>> OnAssignmentsChanged;
+        public event Action<Dictionary<int, int>> OnAssignmentsChangedById;
 
         private void Awake()
         {
@@ -31,7 +29,7 @@ namespace IDM.Economy.Adapters
             }
 
             // Register this adapter with the ServiceLocator
-            ServiceLocator.Instance.RegisterService<IGathererSystem>(this);
+            ServiceLocator.Instance.RegisterService<GathererSystemAdapter>(this);
         }
 
         private void OnEnable()
@@ -63,26 +61,36 @@ namespace IDM.Economy.Adapters
 
         private void HandleAssignmentsChanged(Dictionary<ResourceType, int> assignments)
         {
-            // Forward the event
-            OnAssignmentsChanged?.Invoke(assignments);
-
-            // Publish individual gatherer changed events for each assignment
+            // Convert ResourceType enum values to integers for cross-assembly compatibility
+            Dictionary<int, int> assignmentsById = new Dictionary<int, int>();
             foreach (var kvp in assignments)
             {
-                GathererChangedEvent typedEvent = new GathererChangedEvent(kvp.Key, kvp.Value);
-                TypedEventBus.Instance.Publish(typedEvent);
+                assignmentsById[(int)kvp.Key] = kvp.Value;
+            }
+
+            // Forward the event
+            OnAssignmentsChangedById?.Invoke(assignmentsById);
+
+            // Publish individual gatherer changed events for each assignment
+            if (TypedEventBus.Instance != null)
+            {
+                foreach (var kvp in assignments)
+                {
+                    GathererChangedEvent typedEvent = new GathererChangedEvent((int)kvp.Key, kvp.Value);
+                    TypedEventBus.Instance.Publish(typedEvent);
+                }
             }
         }
 
-        // IGathererSystem methods (forward to GathererSystem)
-        public bool AssignGatherers(ResourceType resourceType, int count)
+        // Public methods that forward to GathererSystem using primitive types
+        public bool AssignGatherers(int resourceTypeId, int count)
         {
-            return _gathererSystem.AssignGatherers(resourceType, count);
+            return _gathererSystem.AssignGatherers((ResourceType)resourceTypeId, count);
         }
 
-        public int GetAssignedGatherers(ResourceType resourceType)
+        public int GetAssignedGatherers(int resourceTypeId)
         {
-            return _gathererSystem.GetAssignedGatherers(resourceType);
+            return _gathererSystem.GetAssignedGatherers((ResourceType)resourceTypeId);
         }
 
         public int GetTotalAssignedGatherers()

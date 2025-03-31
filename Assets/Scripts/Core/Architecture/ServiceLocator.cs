@@ -89,5 +89,21 @@ namespace IDM.Core
                 Debug.Log($"Service unregistered: {typeof(T).Name}");
             }
         }
+
+        /// <summary>
+        /// Log all registered services using reflection
+        /// </summary>
+        public void LogAllRegisteredServices()
+        {
+            Debug.Log($"Currently registered services: {_services.Count}");
+
+            foreach (var serviceEntry in _services)
+            {
+                Type serviceType = serviceEntry.Key;
+                object serviceInstance = serviceEntry.Value;
+
+                Debug.Log($"- {serviceType.FullName} (Implementation: {serviceInstance.GetType().Name})");
+            }
+        }
     }
 }

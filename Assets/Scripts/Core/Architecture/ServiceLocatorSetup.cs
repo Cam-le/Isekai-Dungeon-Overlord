@@ -1,8 +1,6 @@
 using UnityEngine;
 using IDM.Core;
 using IDM.Core.Interfaces;
-using IDM.Economy.Interfaces;
-using System.Resources;
 
 namespace IDM.Core
 {
@@ -60,17 +58,25 @@ namespace IDM.Core
             // Log the registered services for debugging
             Debug.Log("Checking registered services...");
 
+            // Only check Core services that we can reference directly
             CheckService<IGameStateManager>("GameStateManager");
-            CheckService<IEventManager>("EventManager");
+            CheckService<ICoreEventManager>("EventManager");
             CheckService<IEventBus>("EventBus");
-            CheckService<IResourceManager>("ResourceManager");
-            CheckService<IGathererSystem>("GathererSystem");
+
+            // Log all registered services without needing direct type references
+            LogAllRegisteredServices();
         }
 
         private void CheckService<T>(string serviceName)
         {
             bool isRegistered = ServiceLocator.Instance.IsServiceRegistered<T>();
             Debug.Log($"Service {serviceName} ({typeof(T).Name}) is {(isRegistered ? "registered" : "NOT registered")}");
+        }
+
+        private void LogAllRegisteredServices()
+        {
+            // This will use reflection to get all registered services without needing direct type references
+            ServiceLocator.Instance.LogAllRegisteredServices();
         }
     }
 }

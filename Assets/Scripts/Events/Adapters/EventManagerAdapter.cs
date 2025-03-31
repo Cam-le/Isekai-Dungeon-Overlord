@@ -1,22 +1,27 @@
 using System;
 using UnityEngine;
+using IDM.Core;
 using IDM.Core.Interfaces;
 using IDM.Core.Events;
-using IDM.Events;
-using IDM.Core;
+using IDM.Events.Interfaces;
 
 namespace IDM.Events.Adapters
 {
     /// <summary>
-    /// Adapter to make the existing EventManager compatible with the IEventManager interface
-    /// while preserving existing functionality.
+    /// Adapter to make the existing EventManager compatible with the ICoreEventManager interface
+    /// while preserving existing functionality. This avoids cross-assembly type issues.
     /// </summary>
     [RequireComponent(typeof(EventManager))]
-    public class EventManagerAdapter : MonoBehaviour, IEventManager
+    public class EventManagerAdapter : MonoBehaviour, ICoreEventManager, IEventManager
     {
         private EventManager _eventManager;
+        private GameEvent _currentEvent;
 
-        // IEventManager events (forward to original implementation)
+        // ICoreEventManager events (for cross-assembly use)
+        public event Action<string> OnEventStartedById;
+        public event Action<string, int> OnEventCompletedWithChoice;
+
+        // IEventManager events (for same-assembly use)
         public event Action<GameEvent> OnEventStarted;
         public event Action<GameEvent> OnEventCompleted;
 
@@ -30,7 +35,8 @@ namespace IDM.Events.Adapters
                 return;
             }
 
-            // Register this adapter with the ServiceLocator
+            // Register this adapter with the ServiceLocator as both interfaces
+            ServiceLocator.Instance.RegisterService<ICoreEventManager>(this);
             ServiceLocator.Instance.RegisterService<IEventManager>(this);
         }
 
@@ -54,40 +60,78 @@ namespace IDM.Events.Adapters
             }
         }
 
-        // Event handlers that forward events and also publish typed events
+        // Event handlers
         private void HandleEventStarted(GameEvent gameEvent)
         {
-            // Forward the event
+            // Store current event
+            _currentEvent = gameEvent;
+
+            // Forward the event to same-assembly subscribers
             OnEventStarted?.Invoke(gameEvent);
 
-            // Publish a typed event
-            GameEventStartedEvent typedEvent = new GameEventStartedEvent(gameEvent);
-            TypedEventBus.Instance.Publish(typedEvent);
+            // Forward to cross-assembly subscribers using only the ID
+            OnEventStartedById?.Invoke(gameEvent.id);
+
+            // Publish a typed event for TypedEventBus users
+            if (TypedEventBus.Instance != null)
+            {
+                GameEventStartedEvent typedEvent = new GameEventStartedEvent(
+                    gameEvent.id,
+                    gameEvent.title
+                );
+                TypedEventBus.Instance.Publish(typedEvent);
+            }
         }
 
         private void HandleEventCompleted(GameEvent gameEvent)
         {
-            // Forward the event
+            // Forward the event to same-assembly subscribers
             OnEventCompleted?.Invoke(gameEvent);
 
-            // Publish a typed event - we don't have choice index here, so we use -1
-            // In a complete implementation, we would track the choice index
-            GameEventCompletedEvent typedEvent = new GameEventCompletedEvent(gameEvent, -1);
-            TypedEventBus.Instance.Publish(typedEvent);
+            // We don't know the choice index here, so we use -1
+            // Forward to cross-assembly subscribers
+            OnEventCompletedWithChoice?.Invoke(gameEvent.id, -1);
+
+            // Publish a typed event for TypedEventBus users
+            if (TypedEventBus.Instance != null)
+            {
+                GameEventCompletedEvent typedEvent = new GameEventCompletedEvent(
+                    gameEvent.id,
+                    -1
+                );
+                TypedEventBus.Instance.Publish(typedEvent);
+            }
+
+            // Clear current event
+            _currentEvent = null;
         }
 
-        // IEventManager methods (forward to EventManager)
-        public GameEvent GetRandomEvent()
-        {
-            return _eventManager.GetRandomEvent();
-        }
-
+        // ICoreEventManager methods
         public void SelectEventChoice(int choiceIndex)
         {
             _eventManager.SelectEventChoice(choiceIndex);
 
-            // Note: Ideally we would have access to the current event here to publish a complete event
-            // This is a limitation of the current architecture that would be addressed in a more thorough refactoring
+            // If we still have the current event reference, we can publish a complete event with the choice
+            if (_currentEvent != null)
+            {
+                OnEventCompletedWithChoice?.Invoke(_currentEvent.id, choiceIndex);
+
+                // Publish a typed event
+                if (TypedEventBus.Instance != null)
+                {
+                    GameEventCompletedEvent typedEvent = new GameEventCompletedEvent(
+                        _currentEvent.id,
+                        choiceIndex
+                    );
+                    TypedEventBus.Instance.Publish(typedEvent);
+                }
+            }
+        }
+
+        // IEventManager methods
+        public GameEvent GetRandomEvent()
+        {
+            return _eventManager.GetRandomEvent();
         }
     }
 }

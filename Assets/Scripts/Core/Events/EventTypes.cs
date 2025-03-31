@@ -8,13 +8,13 @@ namespace IDM.Core.Events
     /// </summary>
     public readonly struct ResourceChangedEvent
     {
-        public readonly IDM.Economy.ResourceType ResourceType;
+        public readonly int ResourceTypeId;
         public readonly int NewValue;
         public readonly int OldValue;
 
-        public ResourceChangedEvent(IDM.Economy.ResourceType type, int newValue, int oldValue)
+        public ResourceChangedEvent(int resourceTypeId, int newValue, int oldValue)
         {
-            ResourceType = type;
+            ResourceTypeId = resourceTypeId;
             NewValue = newValue;
             OldValue = oldValue;
         }
@@ -25,12 +25,12 @@ namespace IDM.Core.Events
     /// </summary>
     public readonly struct GathererChangedEvent
     {
-        public readonly IDM.Economy.ResourceType ResourceType;
+        public readonly int ResourceTypeId;
         public readonly int NewCount;
 
-        public GathererChangedEvent(IDM.Economy.ResourceType type, int count)
+        public GathererChangedEvent(int resourceTypeId, int count)
         {
-            ResourceType = type;
+            ResourceTypeId = resourceTypeId;
             NewCount = count;
         }
     }
@@ -85,11 +85,13 @@ namespace IDM.Core.Events
     /// </summary>
     public readonly struct GameEventStartedEvent
     {
-        public readonly IDM.Events.GameEvent GameEvent;
+        public readonly string EventId;
+        public readonly string EventTitle;
 
-        public GameEventStartedEvent(IDM.Events.GameEvent gameEvent)
+        public GameEventStartedEvent(string eventId, string eventTitle)
         {
-            GameEvent = gameEvent;
+            EventId = eventId;
+            EventTitle = eventTitle;
         }
     }
 
@@ -98,12 +100,12 @@ namespace IDM.Core.Events
     /// </summary>
     public readonly struct GameEventCompletedEvent
     {
-        public readonly IDM.Events.GameEvent GameEvent;
+        public readonly string EventId;
         public readonly int ChoiceIndex;
 
-        public GameEventCompletedEvent(IDM.Events.GameEvent gameEvent, int choiceIndex)
+        public GameEventCompletedEvent(string eventId, int choiceIndex)
         {
-            GameEvent = gameEvent;
+            EventId = eventId;
             ChoiceIndex = choiceIndex;
         }
     }
@@ -128,9 +130,9 @@ namespace IDM.Core.Events
     /// </summary>
     public readonly struct AllResourcesUpdatedEvent
     {
-        public readonly IReadOnlyDictionary<IDM.Economy.ResourceType, int> Resources;
+        public readonly IReadOnlyDictionary<int, int> Resources;
 
-        public AllResourcesUpdatedEvent(IReadOnlyDictionary<IDM.Economy.ResourceType, int> resources)
+        public AllResourcesUpdatedEvent(IReadOnlyDictionary<int, int> resources)
         {
             Resources = resources;
         }

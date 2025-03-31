@@ -1,16 +1,25 @@
-using UnityEngine;
+using System;
+using System.Collections.Generic;
 
-public class IGathererSystem : MonoBehaviour
+namespace IDM.Economy.Interfaces
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    /// <summary>
+    /// Interface for gatherer management
+    /// </summary>
+    public interface IGathererSystem
     {
-        
-    }
+        // Events
+        event Action<int> OnAvailableGatherersChanged;
+        event Action<Dictionary<ResourceType, int>> OnAssignmentsChanged;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Methods
+        bool AssignGatherers(ResourceType resourceType, int count);
+        int GetAssignedGatherers(ResourceType resourceType);
+        int GetTotalAssignedGatherers();
+        int GetAvailableGatherers();
+        void AddGatherers(int count);
+        void SetEfficiencyMultiplier(float multiplier);
+        float GetEfficiencyMultiplier();
+        void ResetAssignments();
     }
 }

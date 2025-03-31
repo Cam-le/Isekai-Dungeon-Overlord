@@ -64,8 +64,11 @@ namespace IDM.Economy.Adapters
             OnResourceChanged?.Invoke(resourceType, newValue);
 
             // Publish a typed event (we don't have old value, so using 0 for now)
-            // In a complete implementation, we would track previous values
-            ResourceChangedEvent typedEvent = new ResourceChangedEvent(resourceType, newValue, 0);
+            ResourceChangedEvent typedEvent = new ResourceChangedEvent(
+                (int)resourceType,
+                newValue,
+                0
+            );
             TypedEventBus.Instance.Publish(typedEvent);
         }
 
@@ -75,7 +78,10 @@ namespace IDM.Economy.Adapters
             OnGathererChanged?.Invoke(resourceType, newCount);
 
             // Publish a typed event
-            GathererChangedEvent typedEvent = new GathererChangedEvent(resourceType, newCount);
+            GathererChangedEvent typedEvent = new GathererChangedEvent(
+                (int)resourceType,
+                newCount
+            );
             TypedEventBus.Instance.Publish(typedEvent);
         }
 
@@ -84,8 +90,15 @@ namespace IDM.Economy.Adapters
             // Forward the event
             OnResourcesUpdated?.Invoke(resources);
 
+            // Convert to int-based dictionary for cross-assembly compatibility
+            Dictionary<int, int> resourcesById = new Dictionary<int, int>();
+            foreach (var kvp in resources)
+            {
+                resourcesById[(int)kvp.Key] = kvp.Value;
+            }
+
             // Publish a typed event
-            AllResourcesUpdatedEvent typedEvent = new AllResourcesUpdatedEvent(resources);
+            AllResourcesUpdatedEvent typedEvent = new AllResourcesUpdatedEvent(resourcesById);
             TypedEventBus.Instance.Publish(typedEvent);
         }
 

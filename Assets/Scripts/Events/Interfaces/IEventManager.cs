@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
-namespace IDM.Core.Interfaces
+
+namespace IDM.Events.Interfaces
 {
     /// <summary>
     /// Interface for event management and handling
@@ -16,4 +17,3 @@ namespace IDM.Core.Interfaces
         void SelectEventChoice(int choiceIndex);
     }
 }
-
