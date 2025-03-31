@@ -5,7 +5,8 @@
         "IDM.Core",
         "Unity.TextMeshPro",
         "Unity.TextMeshPro.Editor",
-        "IDM.Economy"
+        "IDM.Economy",
+        "IDM.Events"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
