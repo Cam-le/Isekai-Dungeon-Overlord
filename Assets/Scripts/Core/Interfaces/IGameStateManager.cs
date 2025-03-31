@@ -1,16 +1,29 @@
+using System;
 using UnityEngine;
 
-public class IGameStateManager : MonoBehaviour
+namespace IDM.Core.Interfaces
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    /// <summary>
+    /// Interface for managing game states and turn progression
+    /// </summary>
+    public interface IGameStateManager
     {
-        
-    }
+        // Properties
+        GameStateType CurrentStateType { get; }
+        int CurrentTurn { get; }
+        TimePeriod CurrentTimePeriod { get; }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Events
+        event Action<GameStateType> OnStateChanged;
+        event Action<int> OnTurnChanged;
+        event Action<TimePeriod> OnTimePeriodChanged;
+
+        // Methods
+        void ChangeState(GameStateType newState);
+        void AdvanceTimePeriod();
+        void AdvanceToNextTurn();
+        void CompleteActionAndReturnToSelection();
+        bool ShouldRaidOccur();
     }
 }
+

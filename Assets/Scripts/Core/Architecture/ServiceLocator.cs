@@ -5,8 +5,8 @@ using UnityEngine;
 namespace IDM.Core
 {
     /// <summary>
-    /// Service Locator provides centralized access to game services
-    /// without direct dependencies between components
+    /// Service locator pattern implementation to reduce direct dependencies between systems
+    /// and replace the excessive singleton usage throughout the codebase.
     /// </summary>
     public class ServiceLocator : MonoBehaviour
     {
@@ -39,10 +39,8 @@ namespace IDM.Core
         }
 
         /// <summary>
-        /// Register a service implementation
+        /// Register a service implementation for a specific type
         /// </summary>
-        /// <typeparam name="T">Interface type</typeparam>
-        /// <param name="service">Service implementation</param>
         public void RegisterService<T>(T service)
         {
             _services[typeof(T)] = service;
@@ -50,10 +48,17 @@ namespace IDM.Core
         }
 
         /// <summary>
-        /// Get a registered service
+        /// Register a service implementation for an interface type
         /// </summary>
-        /// <typeparam name="T">Interface type to retrieve</typeparam>
-        /// <returns>Service implementation or default if not found</returns>
+        public void RegisterService<TInterface, TImplementation>(TImplementation service) where TImplementation : TInterface
+        {
+            _services[typeof(TInterface)] = service;
+            Debug.Log($"Service registered: {typeof(TInterface).Name} (Implementation: {typeof(TImplementation).Name})");
+        }
+
+        /// <summary>
+        /// Get a registered service by type
+        /// </summary>
         public T GetService<T>()
         {
             if (_services.TryGetValue(typeof(T), out var service))
@@ -68,17 +73,14 @@ namespace IDM.Core
         /// <summary>
         /// Check if a service is registered
         /// </summary>
-        /// <typeparam name="T">Interface type to check</typeparam>
-        /// <returns>True if service is registered</returns>
-        public bool HasService<T>()
+        public bool IsServiceRegistered<T>()
         {
             return _services.ContainsKey(typeof(T));
         }
 
         /// <summary>
-        /// Unregister a service
+        /// Remove a registered service
         /// </summary>
-        /// <typeparam name="T">Interface type to unregister</typeparam>
         public void UnregisterService<T>()
         {
             if (_services.ContainsKey(typeof(T)))

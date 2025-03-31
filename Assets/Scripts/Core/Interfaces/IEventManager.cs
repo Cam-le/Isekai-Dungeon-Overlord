@@ -1,16 +1,19 @@
+using System;
 using UnityEngine;
-
-public class IEventManager : MonoBehaviour
+namespace IDM.Core.Interfaces
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    /// <summary>
+    /// Interface for event management and handling
+    /// </summary>
+    public interface IEventManager
     {
-        
-    }
+        // Events
+        event Action<GameEvent> OnEventStarted;
+        event Action<GameEvent> OnEventCompleted;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Methods
+        GameEvent GetRandomEvent();
+        void SelectEventChoice(int choiceIndex);
     }
 }
+

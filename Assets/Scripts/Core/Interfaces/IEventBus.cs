@@ -1,16 +1,17 @@
+using System;
 using UnityEngine;
 
-public class IEventBus : MonoBehaviour
+namespace IDM.Core.Interfaces
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    /// <summary>
+    /// Interface for pub/sub event system
+    /// </summary>
+    public interface IEventBus
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        void AddListener(string eventName, Action<object> listener);
+        void RemoveListener(string eventName, Action<object> listener);
+        void TriggerEvent(string eventName, object data = null);
+        void ClearAllListeners();
     }
 }
+
