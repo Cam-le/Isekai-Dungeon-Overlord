@@ -1,0 +1,120 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/IDM_MainUI.uss?fileID=7433441132597879392&amp;guid=4551f0e9154a6c346acd98a6884e2bde&amp;type=3#IDM_MainUI" />
+    <ui:VisualElement name="root-container" class="root-container">
+        <ui:VisualElement name="header-panel" class="header-panel">
+            <ui:VisualElement name="turn-info-container" class="turn-info-container">
+                <ui:Label name="turn-counter" text="Turn 1" class="turn-counter" />
+                <ui:Label name="current-time" text="Morning" class="current-time" />
+            </ui:VisualElement>
+            <ui:VisualElement name="time-indicators" class="time-indicators">
+                <ui:VisualElement name="morning-indicator" class="time-indicator active-time" />
+                <ui:VisualElement name="afternoon-indicator" class="time-indicator inactive-time" />
+                <ui:VisualElement name="evening-indicator" class="time-indicator inactive-time" />
+                <ui:VisualElement name="night-indicator" class="time-indicator inactive-time" />
+            </ui:VisualElement>
+            <ui:VisualElement name="resource-display" class="resource-display">
+                <ui:VisualElement name="dp-display" class="resource-container">
+                    <ui:VisualElement name="dp-icon" class="resource-icon dp-icon" />
+                    <ui:Label name="dp-value" text="125" class="resource-value" />
+                    <ui:Label text="DP" class="resource-label" />
+                </ui:VisualElement>
+                <ui:VisualElement name="wood-display" class="resource-container">
+                    <ui:VisualElement name="wood-icon" class="resource-icon wood-icon" />
+                    <ui:Label name="wood-value" text="45" class="resource-value" />
+                    <ui:Label text="Wood" class="resource-label" />
+                </ui:VisualElement>
+                <ui:VisualElement name="stone-display" class="resource-container">
+                    <ui:VisualElement name="stone-icon" class="resource-icon stone-icon" />
+                    <ui:Label name="stone-value" text="30" class="resource-value" />
+                    <ui:Label text="Stone" class="resource-label" />
+                </ui:VisualElement>
+                <ui:VisualElement name="mana-display" class="resource-container">
+                    <ui:VisualElement name="mana-icon" class="resource-icon mana-icon" />
+                    <ui:Label name="mana-value" text="15" class="resource-value" />
+                    <ui:Label text="Mana" class="resource-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:ScrollView name="main-content" class="main-content">
+            <ui:VisualElement name="dungeon-overview-panel" class="content-panel">
+                <ui:Label text="Dungeon Overview" class="panel-title" />
+                <ui:Label text="Manage your dungeon, expand your influence, and survive the raids." class="panel-subtitle" />
+                <ui:VisualElement name="dungeon-visualization" class="dungeon-visualization">
+                    <ui:Label text="Dungeon Visualization" class="placeholder-text" />
+                    <ui:VisualElement name="dungeon-stats" class="dungeon-stats">
+                        <ui:Label text="Minions: 12 active" class="stat-text" />
+                        <ui:Label text="Rooms: 5 built" class="stat-text" />
+                        <ui:Label text="Defense Rating: Medium" class="stat-text" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="status-cards" class="status-cards">
+                    <ui:VisualElement name="construction-card" class="status-card">
+                        <ui:Label text="Active Construction" class="card-title" />
+                        <ui:Label text="No active projects" class="card-empty-text" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="resource-card" class="status-card">
+                        <ui:Label text="Resource Operations" class="card-title" />
+                        <ui:Label text="No gathering operations" class="card-empty-text" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="dungeon-management-panel" class="content-panel hidden">
+                <ui:Label text="Dungeon Management" class="panel-title" />
+                <ui:VisualElement name="management-content" class="management-grid">
+                    <ui:VisualElement name="minion-assignments" class="management-card">
+                        <ui:Label text="Minion Assignments" class="card-title" />
+                        <ui:VisualElement class="minion-assignment">
+                            <ui:VisualElement class="assignment-info">
+                                <ui:Label text="Barracks Guard" class="assignment-name" />
+                                <ui:Label text="Defends against raids" class="assignment-description" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="counter-control">
+                                <ui:Button name="decrease-guard" text="-" class="counter-button" />
+                                <ui:Label text="3" class="counter-value" />
+                                <ui:Button name="increase-guard" text="+" class="counter-button" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="facilities" class="management-card">
+                        <ui:Label text="Dungeon Facilities" class="card-title" />
+                        <ui:VisualElement class="facility">
+                            <ui:VisualElement class="facility-icon-container">
+                                <ui:VisualElement class="facility-icon red" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="facility-info">
+                                <ui:Label text="Barracks (Level 2)" class="facility-name" />
+                                <ui:Label text="Houses combat minions" class="facility-description" />
+                            </ui:VisualElement>
+                            <ui:Label text="10/12 capacity" class="facility-capacity" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="building-construction-panel" class="content-panel hidden">
+                <ui:Label text="Building Construction" class="panel-title" />
+            </ui:VisualElement>
+            <ui:VisualElement name="resource-gathering-panel" class="content-panel hidden">
+                <ui:Label text="Resource Gathering" class="panel-title" />
+            </ui:VisualElement>
+            <ui:VisualElement name="faction-negotiation-panel" class="content-panel hidden">
+                <ui:Label text="Faction Negotiation" class="panel-title" />
+            </ui:VisualElement>
+        </ui:ScrollView>
+        <ui:VisualElement name="action-bar" class="action-bar">
+            <ui:VisualElement name="action-selection-buttons" class="action-buttons">
+                <ui:Button name="dungeon-management-btn" text="Manage Dungeon" class="action-button management-button" />
+                <ui:Button name="faction-negotiation-btn" text="Negotiate" class="action-button negotiation-button" />
+                <ui:Button name="building-construction-btn" text="Build" class="action-button construction-button" />
+                <ui:Button name="resource-gathering-btn" text="Gather Resources" class="action-button gathering-button" />
+                <ui:VisualElement class="button-separator" />
+                <ui:Button name="advance-time-btn" text="Advance Time" class="action-button time-button" />
+                <ui:Button name="end-turn-btn" text="End Turn" class="action-button end-turn-button" />
+            </ui:VisualElement>
+            <ui:VisualElement name="return-button-container" class="return-button-container hidden">
+                <ui:Button name="return-to-selection-btn" text="Return to Actions" class="return-button">
+                    <ui:VisualElement class="return-icon" />
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</UXML>

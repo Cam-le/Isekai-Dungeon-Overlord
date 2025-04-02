@@ -1,0 +1,430 @@
+/* Root Styles */
+.root-container {
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+}
+
+/* Hidden Elements */
+.hidden {
+    display: none;
+}
+
+/* ===== HEADER PANEL ===== */
+.header-panel {
+    background-color: rgb(23, 23, 31);
+    border-bottom-width: 2px;
+    border-bottom-color: rgb(103, 58, 183);
+    padding: 10px 15px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Turn Info */
+.turn-info-container {
+    flex-direction: column;
+}
+
+.turn-counter {
+    font-size: 22px;
+    -unity-font-style: bold;
+    color: white;
+    margin-bottom: 2px;
+}
+
+.current-time {
+    font-size: 14px;
+    color: rgb(170, 146, 236);
+}
+
+/* Time Indicators */
+.time-indicators {
+    flex-direction: row;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.time-indicator {
+    width: 24px;
+    height: 24px;
+    margin: 0 4px;
+    border-radius: 4px;
+}
+
+.active-time {
+    background-color: rgb(128, 51, 204);
+    border-width: 2px;
+    border-color: rgb(170, 146, 236);
+}
+
+.completed-time {
+    background-color: rgb(51, 51, 204);
+}
+
+.inactive-time {
+    background-color: rgb(77, 77, 77);
+}
+
+/* Resource Display */
+.resource-display {
+    flex-direction: row;
+}
+
+.resource-container {
+    flex-direction: row;
+    align-items: center;
+    background-color: rgb(43, 43, 54);
+    border-radius: 15px;
+    padding: 5px 10px;
+    margin: 0 4px;
+}
+
+.resource-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    margin-right: 8px;
+}
+
+.dp-icon {
+    background-color: rgb(128, 51, 204);
+}
+
+.wood-icon {
+    background-color: rgb(191, 124, 41);
+}
+
+.stone-icon {
+    background-color: rgb(112, 112, 112);
+}
+
+.mana-icon {
+    background-color: rgb(41, 121, 255);
+}
+
+.resource-value {
+    color: white;
+    font-size: 14px;
+    -unity-font-style: bold;
+    margin-right: 2px;
+}
+
+.resource-label {
+    color: rgb(160, 160, 160);
+    font-size: 12px;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+    flex-grow: 1;
+    background-color: rgb(240, 240, 245);
+}
+
+.content-panel {
+    padding: 20px;
+}
+
+.panel-title {
+    font-size: 24px;
+    -unity-font-style: bold;
+    color: rgb(95, 37, 159);
+    margin-bottom: 10px;
+}
+
+.panel-subtitle {
+    font-size: 14px;
+    color: rgb(90, 90, 90);
+    margin-bottom: 20px;
+}
+
+/* Dungeon Visualization */
+.dungeon-visualization {
+    background-color: rgb(40, 40, 50);
+    border-radius: 8px;
+    height: 200px;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.placeholder-text {
+    color: rgb(120, 120, 120);
+    font-size: 18px;
+}
+
+.dungeon-stats {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.stat-text {
+    color: white;
+    font-size: 12px;
+    margin: 2px 0;
+}
+
+/* Status Cards */
+.status-cards {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.status-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 12px;
+    width: 48%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: rgb(40, 40, 40);
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(220, 220, 220);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+}
+
+.card-empty-text {
+    color: rgb(150, 150, 150);
+    font-size: 14px;
+    font-style: italic;
+}
+
+/* Project Items */
+.project-item {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.project-marker {
+    width: 4px;
+    height: 24px;
+    background-color: rgb(128, 51, 204);
+    margin-right: 8px;
+}
+
+.project-info {
+    flex-grow: 1;
+}
+
+.project-name {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.project-progress {
+    height: 6px;
+}
+
+.progress-value {
+    font-size: 12px;
+    -unity-font-style: bold;
+    margin-left: 8px;
+}
+
+/* Resource Operations */
+.resource-operation {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.operation-name {
+    font-size: 14px;
+}
+
+.operation-value {
+    font-size: 14px;
+}
+
+/* Management Panel */
+.management-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.management-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 16px;
+    width: 48%;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Minion Assignment */
+.minion-assignment {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.assignment-info {
+    flex-grow: 1;
+}
+
+.assignment-name {
+    font-size: 14px;
+    -unity-font-style: bold;
+}
+
+.assignment-description {
+    font-size: 12px;
+    color: rgb(120, 120, 120);
+}
+
+.counter-control {
+    flex-direction: row;
+    align-items: center;
+}
+
+.counter-button {
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    background-color: rgb(240, 240, 240);
+    -unity-font-style: bold;
+    font-size: 16px;
+}
+
+.counter-value {
+    width: 32px;
+    text-align: center;
+    font-size: 14px;
+    -unity-font-style: bold;
+}
+
+/* Facility */
+.facility {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.facility-icon-container {
+    width: 40px;
+    height: 40px;
+    background-color: rgb(240, 240, 240);
+    border-radius: 8px;
+    margin-right: 12px;
+    align-items: center;
+    justify-content: center;
+}
+
+.facility-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+}
+
+.red {
+    background-color: rgb(233, 30, 99);
+}
+
+.facility-info {
+    flex-grow: 1;
+}
+
+.facility-name {
+    font-size: 14px;
+    -unity-font-style: bold;
+}
+
+.facility-description {
+    font-size: 12px;
+    color: rgb(120, 120, 120);
+}
+
+.facility-capacity {
+    font-size: 12px;
+    -unity-font-style: bold;
+    background-color: rgb(240, 240, 240);
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+
+/* ===== ACTION BAR ===== */
+.action-bar {
+    background-color: rgb(23, 23, 31);
+    border-top-width: 2px;
+    border-top-color: rgb(103, 58, 183);
+    padding: 12px;
+}
+
+.action-buttons {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.action-button {
+    margin: 0 4px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: white;
+}
+
+.management-button {
+    background-color: rgb(63, 81, 181);
+}
+
+.negotiation-button {
+    background-color: rgb(191, 124, 41);
+}
+
+.construction-button {
+    background-color: rgb(38, 166, 154);
+}
+
+.gathering-button {
+    background-color: rgb(41, 121, 255);
+}
+
+.time-button {
+    background-color: rgb(128, 51, 204);
+}
+
+.end-turn-button {
+    background-color: rgb(211, 47, 47);
+}
+
+.button-separator {
+    width: 1px;
+    height: 24px;
+    background-color: rgb(77, 77, 77);
+    margin: 0 8px;
+}
+
+/* Return Button */
+.return-button-container {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.return-button {
+    flex-direction: row;
+    align-items: center;
+    background-color: rgb(66, 66, 77);
+    padding: 8px 16px;
+    border-radius: 8px;
+}
+
+.return-icon {
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    margin-right: 8px;
+}
